@@ -1,0 +1,148 @@
+{
+  "NJIN": {
+    "Settings": {
+      "styleMenu": {
+        "Name": "Default Icon Style",
+        "Label": "Default Icon Style",
+        "Hint": "Shape, colors and font of new icons, and the size of new map notes. Each note can change its own style."
+      },
+      "matchingMenu": {
+        "Name": "Name Matching",
+        "Label": "Name Matching",
+        "Hint": "Which journal names get an automatic icon, and which part of the name becomes the icon text."
+      },
+      "rebuildMenu": {
+        "Name": "Rebuild Icons",
+        "Label": "Rebuild Icons",
+        "Hint": "Creates the icon images of all map notes with an automatic icon again, in every scene. Use it after deleting the images, moving the upload folder or changing the default style."
+      },
+      "folderIcon": {
+        "Name": "Icons from Folders",
+        "Hint": "A new map note whose journal entry is in a folder named like a stock icon (for example \"Village\" or \"Cave\") gets that icon. Automatic icons from the name win."
+      },
+      "autoPageImage": {
+        "Name": "Icons from Image Pages",
+        "Hint": "A new map note without an automatic icon uses the image of its image page, or of the journal entry's first image page, as its icon."
+      },
+      "autoClose": {
+        "Name": "Quick Add Mode",
+        "Hint": "When a new map note gets its icon from this module, it is created right away without showing the map note window."
+      },
+      "uploadPath": {
+        "Name": "Upload Folder",
+        "Hint": "Folder in your user data where the icon images are saved. Don't delete the images: map notes still use them."
+      }
+    },
+    "Shapes": {
+      "circle": "Circle",
+      "square": "Square",
+      "diamond": "Diamond",
+      "hexh": "Hexagon (flat sides left and right)",
+      "hexv": "Hexagon (flat top and bottom)",
+      "none": "None (text only)"
+    },
+    "Fields": {
+      "autoIcon": {
+        "Name": "Automatic Icon",
+        "Hint": "Replaces the icon chosen above with a generated icon showing the text below."
+      },
+      "iconText": {
+        "Name": "Icon Text",
+        "Hint": "Up to 3 characters are easy to read, 4 may fit."
+      },
+      "iconType": {
+        "Name": "Shape"
+      },
+      "fontFamily": {
+        "Name": "Font",
+        "Placeholder": "Default font",
+        "Hint": "Name of a font from fonts.google.com, for example \"Roboto Slab\". Leave empty for the default font.",
+        "NotFound": "This font couldn't be loaded from Google Fonts. The icon uses the default font."
+      },
+      "fontStyle": {
+        "Name": "Font Style",
+        "Bold": "Bold",
+        "Italics": "Italics",
+        "Hint": "If the font has no bold or italic style, the regular style is used."
+      },
+      "iconFontSize": {
+        "Name": "Text Size",
+        "Hint": "Size of the text inside the icon. The icon is 512 units wide."
+      },
+      "strokeWidth": {
+        "Name": "Border Width"
+      },
+      "foreColor": "Text and Border Color",
+      "backColor": "Background Color",
+      "opacity": "Opacity",
+      "preview": {
+        "Name": "Preview",
+        "Hint": "The tint chosen above isn't shown here."
+      },
+      "sampleText": {
+        "Name": "Sample Text",
+        "StyleHint": "Text of the preview icon.",
+        "MatchingHint": "A journal name to test the patterns with."
+      },
+      "iconScale": {
+        "Name": "Icon Size",
+        "Hint": "Size of new map notes in grid squares (1 = one square)."
+      },
+      "fontSize": {
+        "Name": "Label Font Size",
+        "Hint": "Font size of the label of new map notes."
+      }
+    },
+    "NoteConfig": {
+      "Legend": "Automatic Icon"
+    },
+    "StyleConfig": {
+      "Title": "Default Icon Style",
+      "NewNotes": "New Map Notes",
+      "Style": "Icon Style"
+    },
+    "Matching": {
+      "Title": "Name Matching",
+      "Intro": "The patterns are tried from top to bottom; the first one that matches the start of the name sets the icon text.",
+      "Legend": "Patterns",
+      "Test": "Test",
+      "Patterns": {
+        "reg_num_alpha": "Numbers and a letter (23G)",
+        "reg_alpha_num": "A letter and numbers (A24)",
+        "reg_num": "Numbers (123)",
+        "reg_alpha_space": "A letter and a space (Q )",
+        "reg_alpha_dot": "A letter and a period (Z.)",
+        "reg_num_dot": "Numbers and a period (123.)"
+      },
+      "Custom": {
+        "Name": "Custom Pattern",
+        "Hint": "A regular expression, without the surrounding slashes. Start it with ^ to match the start of the name. The last capture group becomes the icon text. Leave empty to turn it off."
+      },
+      "InvalidPattern": "Invalid pattern: {error}",
+      "Result": "Icon text: {text}",
+      "NoMatch": "No match: this name gets no automatic icon."
+    },
+    "Rebuild": {
+      "Title": "Rebuild Icons",
+      "Intro": "Creates the icon images of all map notes with an automatic icon again, in every scene of this world. This can take a while with many notes.",
+      "Keep": {
+        "Name": "Keep each note's style",
+        "Hint": "Recreates missing images, for example after moving or deleting the upload folder."
+      },
+      "Defaults": {
+        "Name": "Use the default style",
+        "Hint": "Replaces each note's style and size with the current defaults. The icon text is kept."
+      },
+      "Submit": "Rebuild",
+      "Progress": "Rebuilding map note icons…",
+      "Done": "Rebuilt the icons of {count} map notes.",
+      "Failed": "{failed} of {total} map note icons couldn't be rebuilt. See the console (F12) for details.",
+      "None": "No map notes with an automatic icon found."
+    },
+    "Notifications": {
+      "UploadFailed": "Nik's Journal Icon Numbers: the icon image couldn't be saved. Check the upload folder setting and your file permissions.",
+      "LegacyActive": "Nik's Journal Icon Numbers is turned off while \"Automatic Journal Icon Numbers\" is active. Deactivate one of the two modules.",
+      "Migrated": "Nik's Journal Icon Numbers: copied the settings and the icons of {notes} map notes from Automatic Journal Icon Numbers."
+    }
+  }
+}

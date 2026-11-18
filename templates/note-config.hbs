@@ -1,0 +1,32 @@
+<fieldset class="njin-fieldset">
+    <legend>{{localize "NJIN.NoteConfig.Legend"}}</legend>
+
+    <div class="form-group">
+        <label for="{{rootId}}-njin-autoIcon">{{localize "NJIN.Fields.autoIcon.Name"}}</label>
+        <div class="form-fields">
+            <input type="checkbox" id="{{rootId}}-njin-autoIcon" name="{{prefix}}autoIcon" {{checked flags.autoIcon}}>
+        </div>
+        <p class="hint">{{localize "NJIN.Fields.autoIcon.Hint"}}</p>
+    </div>
+
+    <div class="njin-auto-fields" {{#unless flags.autoIcon}}hidden{{/unless}}>
+        <div class="form-group">
+            <label for="{{rootId}}-njin-iconText">{{localize "NJIN.Fields.iconText.Name"}}</label>
+            <div class="form-fields">
+                <input type="text" id="{{rootId}}-njin-iconText" name="{{prefix}}iconText" value="{{flags.iconText}}"
+                       spellcheck="false">
+            </div>
+            <p class="hint">{{localize "NJIN.Fields.iconText.Hint"}}</p>
+        </div>
+
+        {{> "modules/niks-journal-icon-numbers/templates/style-fields.hbs"}}
+    </div>
+
+    <div class="form-group">
+        <label>{{localize "NJIN.Fields.preview.Name"}}</label>
+        <div class="form-fields">
+            <div class="njin-preview"><img alt="" hidden></div>
+        </div>
+        <p class="hint">{{localize "NJIN.Fields.preview.Hint"}}</p>
+    </div>
+</fieldset>

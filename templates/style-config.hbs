@@ -1,0 +1,38 @@
+<div class="form-body">
+    <div class="form-group">
+        <label for="{{rootId}}-sampleText">{{localize "NJIN.Fields.sampleText.Name"}}</label>
+        <div class="form-fields">
+            <input type="text" id="{{rootId}}-sampleText" name="sampleText" value="{{sampleText}}" spellcheck="false">
+        </div>
+        <p class="hint">{{localize "NJIN.Fields.sampleText.StyleHint"}}</p>
+    </div>
+
+    <fieldset>
+        <legend>{{localize "NJIN.StyleConfig.NewNotes"}}</legend>
+        <div class="form-group">
+            <label for="{{rootId}}-iconScale">{{localize "NJIN.Fields.iconScale.Name"}}</label>
+            <div class="form-fields">
+                <input type="number" id="{{rootId}}-iconScale" name="iconScale" value="{{iconScale}}" min="0.05" step="0.05">
+            </div>
+            <p class="hint">{{localize "NJIN.Fields.iconScale.Hint"}}</p>
+        </div>
+        <div class="form-group">
+            <label for="{{rootId}}-fontSize">{{localize "NJIN.Fields.fontSize.Name"}}</label>
+            <div class="form-fields">
+                <input type="number" id="{{rootId}}-fontSize" name="fontSize" value="{{fontSize}}" min="8" max="128" step="1">
+            </div>
+            <p class="hint">{{localize "NJIN.Fields.fontSize.Hint"}}</p>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{{localize "NJIN.StyleConfig.Style"}}</legend>
+        {{> "modules/niks-journal-icon-numbers/templates/style-fields.hbs"}}
+        <div class="form-group">
+            <label>{{localize "NJIN.Fields.preview.Name"}}</label>
+            <div class="form-fields">
+                <div class="njin-preview"><img alt="" hidden></div>
+            </div>
+        </div>
+    </fieldset>
+</div>

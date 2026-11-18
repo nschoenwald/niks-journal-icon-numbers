@@ -1,0 +1,95 @@
+/* Nik's Journal Icon Numbers */
+
+.application {
+  --njin-checker-a: rgb(128 128 128 / 0.18);
+  --njin-checker-b: rgb(128 128 128 / 0.04);
+  --njin-preview-border: var(--color-border, rgb(128 128 128 / 0.5));
+  --njin-warning: var(--color-level-warning, #ee9b3a);
+  --njin-error: var(--color-level-error, #d72828);
+}
+
+/* Darker warning colors on the light parchment background. */
+.application.theme-light,
+.theme-light .application:not(.theme-dark) {
+  --njin-warning: #8a5300;
+  --njin-error: #a80000;
+}
+
+/* Preview: a checkerboard behind the icon shows transparent colors. */
+.application .njin-preview {
+  flex: 0 0 96px;
+  width: 96px;
+  height: 96px;
+  border: 1px solid var(--njin-preview-border);
+  border-radius: 6px;
+  background-color: var(--njin-checker-b);
+  background-image: conic-gradient(
+    var(--njin-checker-a) 25%, transparent 0 50%, var(--njin-checker-a) 0 75%, transparent 0
+  );
+  background-size: 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.application .njin-preview img {
+  width: 88px;
+  height: 88px;
+  border: none;
+  object-fit: contain;
+}
+
+.application .njin-match-result {
+  flex: 1;
+  padding-left: 0.5rem;
+}
+
+/* Color and opacity */
+.application .njin-color .form-fields {
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+}
+
+.application .njin-color color-picker {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.application .njin-color .njin-alpha {
+  flex: 0 0 90px;
+  width: 90px;
+}
+
+.application .njin-color .njin-alpha-value {
+  flex: 0 0 3em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.application .njin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.application .njin-font-warning {
+  color: var(--njin-warning);
+}
+
+.application .njin-regex-error {
+  color: var(--njin-error);
+}
+
+/* Rebuild options */
+.application .njin-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.application .njin-radio > span {
+  display: flex;
+  flex-direction: column;
+}

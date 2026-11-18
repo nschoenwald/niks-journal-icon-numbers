@@ -1,0 +1,43 @@
+<div class="form-body">
+    <p class="hint">{{localize "NJIN.Matching.Intro"}}</p>
+
+    <fieldset>
+        <legend>{{localize "NJIN.Matching.Legend"}}</legend>
+        {{#each patterns}}
+        <div class="form-group">
+            <label for="{{../rootId}}-{{key}}">{{localize label}}</label>
+            <div class="form-fields">
+                <input type="checkbox" id="{{../rootId}}-{{key}}" name="{{key}}" {{checked checked}}>
+            </div>
+        </div>
+        {{/each}}
+        <div class="form-group">
+            <label for="{{rootId}}-reg_custom">{{localize "NJIN.Matching.Custom.Name"}}</label>
+            <div class="form-fields">
+                <input type="text" id="{{rootId}}-reg_custom" name="reg_custom" value="{{reg_custom}}" spellcheck="false">
+            </div>
+            <p class="hint">{{localize "NJIN.Matching.Custom.Hint"}}</p>
+            <p class="hint njin-regex-error" hidden>
+                <i class="fa-solid fa-triangle-exclamation" inert></i> <span></span>
+            </p>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{{localize "NJIN.Matching.Test"}}</legend>
+        <div class="form-group">
+            <label for="{{rootId}}-sampleText">{{localize "NJIN.Fields.sampleText.Name"}}</label>
+            <div class="form-fields">
+                <input type="text" id="{{rootId}}-sampleText" name="sampleText" value="{{sampleText}}" spellcheck="false">
+            </div>
+            <p class="hint">{{localize "NJIN.Fields.sampleText.MatchingHint"}}</p>
+        </div>
+        <div class="form-group">
+            <label>{{localize "NJIN.Fields.preview.Name"}}</label>
+            <div class="form-fields">
+                <div class="njin-preview"><img alt="" hidden></div>
+                <span class="njin-match-result"></span>
+            </div>
+        </div>
+    </fieldset>
+</div>

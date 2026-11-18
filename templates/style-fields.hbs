@@ -1,0 +1,65 @@
+<div class="form-group">
+    <label for="{{rootId}}-njin-iconType">{{localize "NJIN.Fields.iconType.Name"}}</label>
+    <div class="form-fields">
+        <select id="{{rootId}}-njin-iconType" name="{{prefix}}iconType">
+            {{selectOptions iconTypes selected=style.iconType localize=true}}
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="{{rootId}}-njin-fontFamily">{{localize "NJIN.Fields.fontFamily.Name"}}</label>
+    <div class="form-fields">
+        <input type="text" id="{{rootId}}-njin-fontFamily" name="{{prefix}}fontFamily" value="{{style.fontFamily}}"
+               placeholder="{{localize "NJIN.Fields.fontFamily.Placeholder"}}" spellcheck="false">
+    </div>
+    <p class="hint">{{localize "NJIN.Fields.fontFamily.Hint"}}</p>
+    <p class="hint njin-font-warning" hidden>
+        <i class="fa-solid fa-triangle-exclamation" inert></i> {{localize "NJIN.Fields.fontFamily.NotFound"}}
+    </p>
+</div>
+
+<div class="form-group">
+    <label>{{localize "NJIN.Fields.fontStyle.Name"}}</label>
+    <div class="form-fields">
+        <label class="checkbox njin-checkbox">
+            <input type="checkbox" name="{{prefix}}fontBold" {{checked style.fontBold}}>
+            {{localize "NJIN.Fields.fontStyle.Bold"}}
+        </label>
+        <label class="checkbox njin-checkbox">
+            <input type="checkbox" name="{{prefix}}fontItalics" {{checked style.fontItalics}}>
+            {{localize "NJIN.Fields.fontStyle.Italics"}}
+        </label>
+    </div>
+    <p class="hint">{{localize "NJIN.Fields.fontStyle.Hint"}}</p>
+</div>
+
+<div class="form-group">
+    <label for="{{rootId}}-njin-iconFontSize">{{localize "NJIN.Fields.iconFontSize.Name"}}</label>
+    <div class="form-fields">
+        <input type="number" id="{{rootId}}-njin-iconFontSize" name="{{prefix}}iconFontSize"
+               value="{{style.iconFontSize}}" min="10" max="500" step="1">
+    </div>
+    <p class="hint">{{localize "NJIN.Fields.iconFontSize.Hint"}}</p>
+</div>
+
+<div class="form-group">
+    <label for="{{rootId}}-njin-strokeWidth">{{localize "NJIN.Fields.strokeWidth.Name"}}</label>
+    <div class="form-fields">
+        <input type="number" id="{{rootId}}-njin-strokeWidth" name="{{prefix}}strokeWidth"
+               value="{{style.strokeWidth}}" min="0" max="100" step="1">
+    </div>
+</div>
+
+{{#each colors}}
+<div class="form-group njin-color" data-color-field="{{key}}">
+    <label>{{localize label}}</label>
+    <div class="form-fields">
+        <color-picker value="{{rgb}}"></color-picker>
+        <input type="range" class="njin-alpha" min="0" max="1" step="0.05" value="{{alpha}}"
+               aria-label="{{localize "NJIN.Fields.opacity"}}" data-tooltip="NJIN.Fields.opacity">
+        <span class="njin-alpha-value">{{alphaLabel}}</span>
+        <input type="hidden" name="{{../prefix}}{{key}}" value="{{value}}">
+    </div>
+</div>
+{{/each}}

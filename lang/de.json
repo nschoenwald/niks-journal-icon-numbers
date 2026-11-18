@@ -1,0 +1,148 @@
+{
+  "NJIN": {
+    "Settings": {
+      "styleMenu": {
+        "Name": "Standard-Iconstil",
+        "Label": "Standard-Iconstil",
+        "Hint": "Form, Farben und Schrift neuer Icons sowie die Größe neuer Kartennotizen. Jede Notiz kann ihren eigenen Stil haben."
+      },
+      "matchingMenu": {
+        "Name": "Namenserkennung",
+        "Label": "Namenserkennung",
+        "Hint": "Welche Journalnamen ein automatisches Icon bekommen und welcher Teil des Namens zum Icontext wird."
+      },
+      "rebuildMenu": {
+        "Name": "Icons neu erstellen",
+        "Label": "Icons neu erstellen",
+        "Hint": "Erstellt die Iconbilder aller Kartennotizen mit automatischem Icon in allen Szenen neu. Nützlich, nachdem die Bilder gelöscht, der Upload-Ordner verschoben oder der Standardstil geändert wurde."
+      },
+      "folderIcon": {
+        "Name": "Icons aus Ordnern",
+        "Hint": "Eine neue Kartennotiz, deren Journaleintrag in einem Ordner mit dem Namen eines Standard-Icons liegt (z. B. \"Village\" oder \"Cave\"), bekommt dieses Icon. Automatische Icons aus dem Namen haben Vorrang."
+      },
+      "autoPageImage": {
+        "Name": "Icons aus Bildseiten",
+        "Hint": "Eine neue Kartennotiz ohne automatisches Icon nutzt das Bild ihrer Bildseite oder der ersten Bildseite des Journaleintrags als Icon."
+      },
+      "autoClose": {
+        "Name": "Schnelles Hinzufügen",
+        "Hint": "Bekommt eine neue Kartennotiz ihr Icon von diesem Modul, wird sie sofort erstellt, ohne das Kartennotiz-Fenster zu zeigen."
+      },
+      "uploadPath": {
+        "Name": "Upload-Ordner",
+        "Hint": "Ordner in deinen Benutzerdaten, in dem die Iconbilder gespeichert werden. Lösche die Bilder nicht: Kartennotizen verwenden sie weiterhin."
+      }
+    },
+    "Shapes": {
+      "circle": "Kreis",
+      "square": "Quadrat",
+      "diamond": "Raute",
+      "hexh": "Sechseck (gerade Seiten links und rechts)",
+      "hexv": "Sechseck (gerade Seiten oben und unten)",
+      "none": "Keine (nur Text)"
+    },
+    "Fields": {
+      "autoIcon": {
+        "Name": "Automatisches Icon",
+        "Hint": "Ersetzt das oben gewählte Icon durch ein erzeugtes Icon mit dem Text unten."
+      },
+      "iconText": {
+        "Name": "Icontext",
+        "Hint": "Bis zu 3 Zeichen sind gut lesbar, 4 passen eventuell."
+      },
+      "iconType": {
+        "Name": "Form"
+      },
+      "fontFamily": {
+        "Name": "Schrift",
+        "Placeholder": "Standardschrift",
+        "Hint": "Name einer Schrift von fonts.google.com, z. B. \"Roboto Slab\". Leer lassen für die Standardschrift.",
+        "NotFound": "Diese Schrift konnte nicht von Google Fonts geladen werden. Das Icon nutzt die Standardschrift."
+      },
+      "fontStyle": {
+        "Name": "Schriftschnitt",
+        "Bold": "Fett",
+        "Italics": "Kursiv",
+        "Hint": "Hat die Schrift keinen fetten oder kursiven Schnitt, wird der normale verwendet."
+      },
+      "iconFontSize": {
+        "Name": "Textgröße",
+        "Hint": "Größe des Textes im Icon. Das Icon ist 512 Einheiten breit."
+      },
+      "strokeWidth": {
+        "Name": "Randbreite"
+      },
+      "foreColor": "Text- und Randfarbe",
+      "backColor": "Hintergrundfarbe",
+      "opacity": "Deckkraft",
+      "preview": {
+        "Name": "Vorschau",
+        "Hint": "Die oben gewählte Tönung wird hier nicht gezeigt."
+      },
+      "sampleText": {
+        "Name": "Beispieltext",
+        "StyleHint": "Text des Vorschau-Icons.",
+        "MatchingHint": "Ein Journalname, mit dem die Muster getestet werden."
+      },
+      "iconScale": {
+        "Name": "Icongröße",
+        "Hint": "Größe neuer Kartennotizen in Rasterfeldern (1 = ein Feld)."
+      },
+      "fontSize": {
+        "Name": "Schriftgröße der Beschriftung",
+        "Hint": "Schriftgröße der Beschriftung neuer Kartennotizen."
+      }
+    },
+    "NoteConfig": {
+      "Legend": "Automatisches Icon"
+    },
+    "StyleConfig": {
+      "Title": "Standard-Iconstil",
+      "NewNotes": "Neue Kartennotizen",
+      "Style": "Iconstil"
+    },
+    "Matching": {
+      "Title": "Namenserkennung",
+      "Intro": "Die Muster werden von oben nach unten geprüft; das erste, das auf den Anfang des Namens passt, bestimmt den Icontext.",
+      "Legend": "Muster",
+      "Test": "Test",
+      "Patterns": {
+        "reg_num_alpha": "Zahlen und ein Buchstabe (23G)",
+        "reg_alpha_num": "Ein Buchstabe und Zahlen (A24)",
+        "reg_num": "Zahlen (123)",
+        "reg_alpha_space": "Ein Buchstabe und ein Leerzeichen (Q )",
+        "reg_alpha_dot": "Ein Buchstabe und ein Punkt (Z.)",
+        "reg_num_dot": "Zahlen und ein Punkt (123.)"
+      },
+      "Custom": {
+        "Name": "Eigenes Muster",
+        "Hint": "Ein regulärer Ausdruck ohne die umschließenden Schrägstriche. Beginne mit ^, damit er auf den Anfang des Namens passt. Die letzte Gruppe wird zum Icontext. Leer lassen zum Ausschalten."
+      },
+      "InvalidPattern": "Ungültiges Muster: {error}",
+      "Result": "Icontext: {text}",
+      "NoMatch": "Kein Treffer: Dieser Name bekommt kein automatisches Icon."
+    },
+    "Rebuild": {
+      "Title": "Icons neu erstellen",
+      "Intro": "Erstellt die Iconbilder aller Kartennotizen mit automatischem Icon in allen Szenen dieser Welt neu. Bei vielen Notizen kann das etwas dauern.",
+      "Keep": {
+        "Name": "Stil jeder Notiz behalten",
+        "Hint": "Erstellt fehlende Bilder neu, z. B. nachdem der Upload-Ordner verschoben oder gelöscht wurde."
+      },
+      "Defaults": {
+        "Name": "Standardstil verwenden",
+        "Hint": "Ersetzt Stil und Größe jeder Notiz durch die aktuellen Standardwerte. Der Icontext bleibt erhalten."
+      },
+      "Submit": "Neu erstellen",
+      "Progress": "Icons der Kartennotizen werden neu erstellt…",
+      "Done": "Die Icons von {count} Kartennotizen wurden neu erstellt.",
+      "Failed": "{failed} von {total} Icons konnten nicht neu erstellt werden. Details in der Konsole (F12).",
+      "None": "Keine Kartennotizen mit automatischem Icon gefunden."
+    },
+    "Notifications": {
+      "UploadFailed": "Nik's Journal Icon Numbers: Das Iconbild konnte nicht gespeichert werden. Prüfe die Einstellung des Upload-Ordners und deine Dateirechte.",
+      "LegacyActive": "Nik's Journal Icon Numbers ist ausgeschaltet, solange \"Automatic Journal Icon Numbers\" aktiv ist. Deaktiviere eines der beiden Module.",
+      "Migrated": "Nik's Journal Icon Numbers: Einstellungen und die Icons von {notes} Kartennotizen wurden aus Automatic Journal Icon Numbers übernommen."
+    }
+  }
+}
