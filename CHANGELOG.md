@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [14.1.0] - 2026-11-19
+
+### Changed
+- Icon images are now saved in `assets/niks-journal-icon-numbers` in your user data by default, instead of `upload/niks-journal-icon-numbers`.
+
+### Added
+- **Icon images move along when you switch.** The first time a GM loads the world after this update, the icon images of map notes are copied from the old folders (Automatic Journal Icon Numbers' upload folder and `upload/niks-journal-icon-numbers`) into the new folder, and the notes use the copies. Images that are missing are created again from the note's settings. The old files stay where they are; you can delete them afterwards.
+
 ## [14.0.0] - 2026-11-18
 
 First release of Nik's Journal Icon Numbers, a fork of Automatic Journal Icon Numbers 1.10.2 by Chris Flanagan.

@@ -1,4 +1,4 @@
-import { MODULE_ID, STYLE_KEYS, debug, getSetting } from "./constants.js";
+import { DEFAULT_UPLOAD_PATH, STYLE_KEYS, debug, getSetting } from "./constants.js";
 import { buildSVG, normalizeStyle } from "./icon-svg.js";
 
 const FilePicker = () => foundry.applications.apps.FilePicker.implementation;
@@ -26,9 +26,17 @@ function fileSource() {
   return globalThis.ForgeVTT?.usingTheForge ? "forgevtt" : "data";
 }
 
-function uploadFolder() {
-  const path = String(getSetting("uploadPath") || `upload/${MODULE_ID}`).trim();
-  return path.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "") || `upload/${MODULE_ID}`;
+/**
+ * Bring a folder path into the form used for comparisons: forward slashes, no leading or trailing slash.
+ * @param {string} path
+ */
+export function normalizeFolder(path) {
+  return String(path ?? "").trim().replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+}
+
+/** The folder new icons are saved in, relative to the user data root. */
+export function uploadFolder() {
+  return normalizeFolder(getSetting("uploadPath")) || DEFAULT_UPLOAD_PATH;
 }
 
 /** A short, stable hash of a string (FNV-1a, 32 bit). */
@@ -75,7 +83,7 @@ async function listFolder(source, folder) {
 }
 
 /** Strip the host and Forge's asset prefix from a file URL so it can be compared with a relative path. */
-function normalizePath(file) {
+export function normalizePath(file) {
   let path = file;
   try {
     if ( /^https?:\/\//.test(file) ) path = new URL(file).pathname.split("/").slice(2).join("/");
@@ -123,6 +131,41 @@ export async function ensureIcon(style, text) {
     if ( !result?.path ) throw new Error(`Upload of ${path} failed`);
     files.set(path, result.path);
     debug("Uploaded icon", result.path);
+    return result.path;
+  })();
+  pending.set(path, promise);
+  try {
+    return await promise;
+  } finally {
+    pending.delete(path);
+  }
+}
+
+/**
+ * Copy an existing image into the upload folder, keeping its file name. If a file of that name is already there, it is
+ * reused.
+ * @param {string} src  The image's path or URL, as stored in a note's texture.
+ * @returns {Promise<string>}  The path or URL of the copy.
+ */
+export async function copyIntoUploadFolder(src) {
+  const source = fileSource();
+  const folder = uploadFolder();
+  const filename = normalizePath(src).split("/").pop();
+  if ( !filename ) throw new Error(`No file name in ${src}`);
+  const path = `${folder}/${filename}`;
+  if ( pending.has(path) ) return pending.get(path);
+
+  const promise = (async () => {
+    const files = await listFolder(source, folder);
+    if ( files.has(path) ) return files.get(path);
+    const response = await fetch(src);
+    if ( !response.ok ) throw new Error(`Could not read ${src} (${response.status})`);
+    const blob = await response.blob();
+    const file = new File([blob], filename, {type: blob.type || "image/svg+xml"});
+    const result = await FilePicker().upload(source, folder, file, {}, {notify: false});
+    if ( !result?.path ) throw new Error(`Upload of ${path} failed`);
+    files.set(path, result.path);
+    debug("Copied icon", src, "to", result.path);
     return result.path;
   })();
   pending.set(path, promise);

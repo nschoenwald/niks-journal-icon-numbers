@@ -1,8 +1,8 @@
-import { LEGACY_ID, MODULE_ID, TEMPLATES, loc } from "./constants.js";
+import { DEFAULT_UPLOAD_PATH, LEGACY_ID, MODULE_ID, TEMPLATES, loc } from "./constants.js";
 import MatchingConfig from "./apps/matching-config.js";
 import RebuildIcons, { rebuildIcons } from "./apps/rebuild-icons.js";
 import StyleConfig from "./apps/style-config.js";
-import { migrateFromLegacy } from "./migration.js";
+import { migrateFromLegacy, migrateIconFiles } from "./migration.js";
 import { onRenderNoteConfig } from "./note-config.js";
 import { applyIcon, getNoteFlags, registerNoteHooks } from "./notes.js";
 import { matchLabel } from "./matching.js";
@@ -39,7 +39,7 @@ function registerSettings() {
   register("autoPageImage", {...setting("autoPageImage"), config: true, type: Boolean, default: false});
   register("autoClose", {...setting("autoClose"), config: true, type: Boolean, default: false});
   register("uploadPath", {
-    ...setting("uploadPath"), config: true, type: String, default: `upload/${MODULE_ID}`, filePicker: "folder"
+    ...setting("uploadPath"), config: true, type: String, default: DEFAULT_UPLOAD_PATH, filePicker: "folder"
   });
 
   // Default style, set in the style menu
@@ -64,6 +64,7 @@ function registerSettings() {
   register("reg_custom", {type: String, default: ""});
 
   register("legacyMigrated", {type: Boolean, default: false});
+  register("iconFilesMigrated", {type: Boolean, default: false});
 }
 
 Hooks.once("init", () => {
@@ -81,4 +82,5 @@ Hooks.once("ready", async () => {
   Hooks.on("renderNoteConfig", onRenderNoteConfig);
   registerNoteHooks();
   await migrateFromLegacy();
+  await migrateIconFiles();
 });

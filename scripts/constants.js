@@ -6,6 +6,9 @@ export const LEGACY_ID = "journal-icon-numbers";
 /** Root key of the module's translations. */
 export const I18N = "NJIN";
 
+/** Default folder for the icon images, relative to the user data root. */
+export const DEFAULT_UPLOAD_PATH = `assets/${MODULE_ID}`;
+
 export const TEMPLATES = {
   noteConfig: `modules/${MODULE_ID}/templates/note-config.hbs`,
   styleFields: `modules/${MODULE_ID}/templates/style-fields.hbs`,

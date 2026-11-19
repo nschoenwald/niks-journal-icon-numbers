@@ -142,7 +142,10 @@
     "Notifications": {
       "UploadFailed": "Nik's Journal Icon Numbers: Das Iconbild konnte nicht gespeichert werden. Prüfe die Einstellung des Upload-Ordners und deine Dateirechte.",
       "LegacyActive": "Nik's Journal Icon Numbers ist ausgeschaltet, solange \"Automatic Journal Icon Numbers\" aktiv ist. Deaktiviere eines der beiden Module.",
-      "Migrated": "Nik's Journal Icon Numbers: Einstellungen und die Icons von {notes} Kartennotizen wurden aus Automatic Journal Icon Numbers übernommen."
+      "Migrated": "Nik's Journal Icon Numbers: Einstellungen und die Icons von {notes} Kartennotizen wurden aus Automatic Journal Icon Numbers übernommen.",
+      "FilesMigrating": "Nik's Journal Icon Numbers: Icons der Kartennotizen werden nach {folder} verschoben…",
+      "FilesMigrated": "Nik's Journal Icon Numbers: Die Icons von {count} Kartennotizen wurden nach {folder} verschoben. Die alten Dateien liegen noch im alten Ordner und können gelöscht werden.",
+      "FilesMigratedFailed": "Nik's Journal Icon Numbers: {failed} von {total} Icons konnten nicht verschoben werden. Details in der Konsole (F12). Für Notizen mit automatischem Icon kann „Icons neu erstellen“ sie wieder erzeugen."
     }
   }
 }

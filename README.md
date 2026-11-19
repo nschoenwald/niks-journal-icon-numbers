@@ -89,7 +89,7 @@ The built-in patterns are tried first, in the order shown, then your own.
   entry's first image page. Off by default.
 - **Quick Add Mode**: when a new note gets its icon from this module, it is created right away without showing the
   Map Note window. Off by default.
-- **Upload Folder**: where the icon images are saved (default `upload/niks-journal-icon-numbers`). Don't delete the
+- **Upload Folder**: where the icon images are saved (default `assets/niks-journal-icon-numbers` in your user data). Don't delete the
   images: the notes still use them.
 
 ### Rebuild icons
@@ -111,7 +111,13 @@ connected.
 1. Deactivate **Automatic Journal Icon Numbers** and activate this module. While both are active, this module stays
    off and shows a warning, since the two would keep replacing each other's icons.
 2. The first time a GM loads the world, the module copies the old module's settings and the automatic icon settings of
-   every map note. The old data stays untouched, and existing icons keep working.
+   every map note.
+3. It also copies the icon images of all map notes from the old module's upload folder into this module's upload
+   folder and points the notes at the copies. Missing images are created again from the note's settings. The old
+   module's settings and files stay untouched; once everything looks right you can delete the old folder
+   (`upload/journal-icon-numbers` by default).
+
+The upload folder setting of the old module isn't taken over: icons always move to this module's folder.
 
 ---
 
