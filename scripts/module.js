@@ -1,4 +1,5 @@
 import { DEFAULT_UPLOAD_PATH, LEGACY_ID, MODULE_ID, TEMPLATES, loc } from "./constants.js";
+import FolderIconsConfig from "./apps/folder-icons-config.js";
 import MatchingConfig from "./apps/matching-config.js";
 import RebuildIcons, { rebuildIcons } from "./apps/rebuild-icons.js";
 import StyleConfig from "./apps/style-config.js";
@@ -6,6 +7,7 @@ import { migrateCompendiumIcons, migrateFromLegacy, migrateIconFiles } from "./m
 import { onRenderNoteConfig } from "./note-config.js";
 import { applyIcon, applyPendingIcons, getNoteFlags, registerNoteHooks } from "./notes.js";
 import { matchLabel } from "./matching.js";
+import { registerRenameHooks } from "./renames.js";
 
 CONFIG.debug.niksJournalIconNumbers ??= false;
 
@@ -27,6 +29,13 @@ function registerSettings() {
     type: MatchingConfig,
     restricted: true
   });
+  game.settings.registerMenu(MODULE_ID, "folderIconsMenu", {
+    ...setting("folderIconsMenu"),
+    label: "NJIN.Settings.folderIconsMenu.Label",
+    icon: "fa-solid fa-folder-tree",
+    type: FolderIconsConfig,
+    restricted: true
+  });
   game.settings.registerMenu(MODULE_ID, "rebuildMenu", {
     ...setting("rebuildMenu"),
     label: "NJIN.Settings.rebuildMenu.Label",
@@ -36,6 +45,7 @@ function registerSettings() {
   });
 
   register("folderIcon", {...setting("folderIcon"), config: true, type: Boolean, default: true});
+  register("followRenames", {...setting("followRenames"), config: true, type: Boolean, default: true});
   register("autoPageImage", {...setting("autoPageImage"), config: true, type: Boolean, default: false});
   register("autoClose", {...setting("autoClose"), config: true, type: Boolean, default: false});
   register("uploadPath", {
@@ -51,6 +61,7 @@ function registerSettings() {
   register("fontItalics", {type: Boolean, default: false});
   register("strokeWidth", {type: Number, default: 10});
   register("iconFontSize", {type: Number, default: 200});
+  register("autoFit", {type: Boolean, default: true});
   register("iconScale", {type: Number, default: 0.75});
   register("fontSize", {type: Number, default: 48});
 
@@ -62,6 +73,9 @@ function registerSettings() {
   register("reg_alpha_dot", {type: Boolean, default: false});
   register("reg_num_dot", {type: Boolean, default: false});
   register("reg_custom", {type: String, default: ""});
+
+  // Folder names mapped to stock icons. Stored in an object: Foundry would wrap a plain array in another array.
+  register("folderIcons", {type: Object, default: {rows: []}});
 
   register("legacyMigrated", {type: Boolean, default: false});
   register("iconFilesMigrated", {type: Boolean, default: false});
@@ -82,6 +96,7 @@ Hooks.once("ready", async () => {
   }
   Hooks.on("renderNoteConfig", onRenderNoteConfig);
   registerNoteHooks();
+  registerRenameHooks();
   await migrateFromLegacy();
   await migrateIconFiles();
   await migrateCompendiumIcons();

@@ -44,6 +44,14 @@
 </div>
 
 <div class="form-group">
+    <label for="{{rootId}}-njin-autoFit">{{localize "NJIN.Fields.autoFit.Name"}}</label>
+    <div class="form-fields">
+        <input type="checkbox" id="{{rootId}}-njin-autoFit" name="{{prefix}}autoFit" {{checked style.autoFit}}>
+    </div>
+    <p class="hint">{{localize "NJIN.Fields.autoFit.Hint"}}</p>
+</div>
+
+<div class="form-group">
     <label for="{{rootId}}-njin-strokeWidth">{{localize "NJIN.Fields.strokeWidth.Name"}}</label>
     <div class="form-fields">
         <input type="number" id="{{rootId}}-njin-strokeWidth" name="{{prefix}}strokeWidth"

@@ -14,7 +14,9 @@ export const TEMPLATES = {
   styleFields: `modules/${MODULE_ID}/templates/style-fields.hbs`,
   styleConfig: `modules/${MODULE_ID}/templates/style-config.hbs`,
   matchingConfig: `modules/${MODULE_ID}/templates/matching-config.hbs`,
-  rebuild: `modules/${MODULE_ID}/templates/rebuild.hbs`
+  rebuild: `modules/${MODULE_ID}/templates/rebuild.hbs`,
+  folderIcons: `modules/${MODULE_ID}/templates/folder-icons.hbs`,
+  folderIconRow: `modules/${MODULE_ID}/templates/folder-icon-row.hbs`
 };
 
 /** Shape keys and their label keys. */
@@ -29,7 +31,8 @@ export const ICON_TYPES = {
 
 /** The style fields stored per note (flags) and as world defaults (settings of the same name). */
 export const STYLE_KEYS = [
-  "iconType", "foreColor", "backColor", "fontFamily", "fontBold", "fontItalics", "strokeWidth", "iconFontSize"
+  "iconType", "foreColor", "backColor", "fontFamily", "fontBold", "fontItalics", "strokeWidth", "iconFontSize",
+  "autoFit"
 ];
 
 /** Name matching settings. */

@@ -18,7 +18,7 @@
       },
       "folderIcon": {
         "Name": "Icons aus Ordnern",
-        "Hint": "Eine neue Kartennotiz, deren Journaleintrag in einem Ordner mit dem Namen eines Standard-Icons liegt (z. B. \"Village\" oder \"Cave\"), bekommt dieses Icon. Automatische Icons aus dem Namen haben Vorrang."
+        "Hint": "Eine neue Kartennotiz, deren Journaleintrag in einem Ordner mit dem Namen eines Standard-Icons (z. B. \"Village\" oder \"Cave\") oder einem unter Ordner-Icons eingetragenen Ordner liegt, bekommt dieses Icon. Automatische Icons aus dem Namen haben Vorrang."
       },
       "autoPageImage": {
         "Name": "Icons aus Bildseiten",
@@ -31,6 +31,15 @@
       "uploadPath": {
         "Name": "Upload-Ordner",
         "Hint": "Ordner in deinen Benutzerdaten, in dem die Iconbilder gespeichert werden. Lösche die Bilder nicht: Kartennotizen verwenden sie weiterhin."
+      },
+      "followRenames": {
+        "Name": "Journal-Umbenennungen folgen",
+        "Hint": "Wird ein Journaleintrag oder eine Seite umbenannt, passen sich die automatischen Icons der Kartennotizen an, z. B. von 12 auf 14. Selbst eingegebener Icontext bleibt erhalten."
+      },
+      "folderIconsMenu": {
+        "Name": "Ordner-Icons",
+        "Label": "Ordner-Icons",
+        "Hint": "Lege fest, welches Standard-Icon ein Journalordner bekommt. So können Ordner beliebig heißen, z. B. \"Dorf\" für das Village-Icon."
       }
     },
     "Shapes": {
@@ -91,6 +100,10 @@
       "fontSize": {
         "Name": "Schriftgröße der Beschriftung",
         "Hint": "Schriftgröße der Beschriftung neuer Kartennotizen."
+      },
+      "autoFit": {
+        "Name": "Text an Form anpassen",
+        "Hint": "Verkleinert den Text, wenn er nicht in die Form passt. Er wird nie größer als die Textgröße oben."
       }
     },
     "NoteConfig": {
@@ -149,6 +162,14 @@
       "FontUnavailable": "Nik's Journal Icon Numbers: Google Fonts ist nicht erreichbar, neue Icons nutzen vorerst die Standardschrift. „Icons neu erstellen“ ergänzt die richtige Schrift, sobald sie wieder erreichbar ist.",
       "WaitingForGM": "Nik's Journal Icon Numbers: Das Icon dieser Notiz wird erstellt, sobald ein GM verbunden ist.",
       "FilesLockedPacks": "Nik's Journal Icon Numbers: Diese gesperrten Kompendien nutzen noch Icons aus dem alten Ordner: {packs}. Behalte den alten Ordner oder entsperre sie und folge den Schritten in der README."
+    },
+    "FolderIcons": {
+      "Title": "Ordner-Icons",
+      "Intro": "Neue Kartennotizen, deren Journaleintrag in einem dieser Ordner liegt, bekommen das gewählte Standard-Icon. Groß- und Kleinschreibung spielt keine Rolle. \"Icons aus Ordnern\" muss aktiviert sein.",
+      "Folder": "Ordnername",
+      "Icon": "Standard-Icon",
+      "Add": "Ordner hinzufügen",
+      "Remove": "Entfernen"
     }
   }
 }

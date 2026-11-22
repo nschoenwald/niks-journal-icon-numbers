@@ -1,0 +1,17 @@
+<div class="form-body">
+    <p class="hint">{{localize "NJIN.FolderIcons.Intro"}}</p>
+    <div class="njin-folder-rows">
+        {{#each rows}}
+        {{> "modules/niks-journal-icon-numbers/templates/folder-icon-row.hbs" row=this icons=../icons rootId=../rootId}}
+        {{/each}}
+    </div>
+    <button type="button" data-action="addRow">
+        <i class="fa-solid fa-plus" inert></i> {{localize "NJIN.FolderIcons.Add"}}
+    </button>
+    <datalist id="{{rootId}}-folders">
+        {{#each folders}}<option value="{{this}}"></option>{{/each}}
+    </datalist>
+    <template class="njin-folder-row-template">
+        {{> "modules/niks-journal-icon-numbers/templates/folder-icon-row.hbs" icons=icons rootId=rootId}}
+    </template>
+</div>

@@ -29,7 +29,8 @@ export function normalizeStyle(style={}) {
     fontBold: !!(style.fontBold ?? defaults.fontBold),
     fontItalics: !!(style.fontItalics ?? defaults.fontItalics),
     strokeWidth: num(style.strokeWidth, defaults.strokeWidth, 0, 100),
-    iconFontSize: num(style.iconFontSize, defaults.iconFontSize, 10, 500)
+    iconFontSize: num(style.iconFontSize, defaults.iconFontSize, 10, 500),
+    autoFit: !!(style.autoFit ?? defaults.autoFit)
   };
 }
 
@@ -200,6 +201,112 @@ async function resolveFont(style, text) {
 }
 
 /* -------------------------------------------- */
+/*  Fitting text to the shape                   */
+/* -------------------------------------------- */
+
+/** Space kept between the text and the border. */
+const FIT_MARGIN = 16;
+
+/** Height of digits and capitals relative to the font size. */
+const CAP_HEIGHT = 0.75;
+
+/** Extra room for machines that draw the default font a little wider than the one that made the icon. */
+const FIT_SAFETY = 1.04;
+
+/**
+ * The width available inside a shape for centered text of a given height.
+ * @param {string} type    The shape.
+ * @param {number} stroke  The border width.
+ * @param {number} height  The text height.
+ * @returns {number}
+ */
+function availableWidth(type, stroke, height) {
+  const y = height / 2;
+  const r = (SIZE - stroke) / 2;
+  switch ( type ) {
+    case "circle": {
+      const inner = (SIZE / 2) - stroke - FIT_MARGIN;
+      return y < inner ? 2 * Math.sqrt((inner ** 2) - (y ** 2)) : 0;
+    }
+    case "square": {
+      const inner = (SIZE / 2) - stroke - FIT_MARGIN;
+      return y < inner ? 2 * inner : 0;
+    }
+    case "diamond":
+      return Math.max(2 * ((SIZE / 2) - (stroke * 0.75) - FIT_MARGIN - y), 0);
+    case "hexh": { // Points at the top and bottom
+      const inner = (0.865 * r) - (stroke / 2) - FIT_MARGIN;
+      if ( y <= r / 2 ) return 2 * inner;
+      return Math.max(2 * inner * (r - stroke - y) / (r / 2), 0);
+    }
+    case "hexv": { // Points on the left and right
+      const top = (0.865 * r) - (stroke / 2) - FIT_MARGIN;
+      if ( y >= top ) return 0;
+      return Math.max(2 * (r - (stroke * 0.6) - FIT_MARGIN - (0.578 * y)), 0);
+    }
+    default:
+      return SIZE - (2 * FIT_MARGIN);
+  }
+}
+
+let measureContext;
+let measureId = 0;
+
+/**
+ * The width of a text relative to its font size, in the font it will be drawn with.
+ * @param {string} text
+ * @param {{css: string, bold: boolean, italic: boolean}} font
+ * @returns {Promise<number|null>}  Null if the text can't be measured.
+ */
+async function measureText(text, font) {
+  let face;
+  try {
+    measureContext ??= document.createElement("canvas").getContext("2d");
+    let family = STOCK_FONT;
+    const url = font.css?.match(/url\((['"]?)(data:[^)'"]+)\1\)/)?.[2];
+    if ( url ) {
+      family = `njin-measure-${++measureId}`;
+      face = new window.FontFace(family, `url(${url})`);
+      await face.load();
+      document.fonts.add(face);
+      family = `"${family}"`;
+    }
+    measureContext.font = `${font.italic ? "italic " : ""}${font.bold ? 700 : 400} 100px ${family}`;
+    return measureContext.measureText(text).width / 100;
+  } catch(err) {
+    warn("Could not measure the icon text.", err);
+    return null;
+  } finally {
+    if ( face ) document.fonts.delete(face);
+  }
+}
+
+/**
+ * The largest font size up to the chosen one at which the text fits inside the shape. Never enlarges the text.
+ * @param {object} style  A normalized style.
+ * @param {string} text
+ * @param {object} font   The resolved font.
+ * @returns {Promise<number>}
+ */
+async function fittedFontSize(style, text, font) {
+  const size = style.iconFontSize;
+  if ( !style.autoFit || !text ) return size;
+  const ratio = await measureText(text, font);
+  if ( !ratio ) return size;
+  const stroke = style.iconType === "none" ? 0 : style.strokeWidth;
+  const fits = s => (ratio * FIT_SAFETY * s) <= availableWidth(style.iconType, stroke, CAP_HEIGHT * s);
+  if ( fits(size) ) return size;
+  let low = Math.min(10, size);
+  let high = size;
+  while ( (high - low) > 0.5 ) {
+    const mid = (low + high) / 2;
+    if ( fits(mid) ) low = mid;
+    else high = mid;
+  }
+  return Math.floor(low);
+}
+
+/* -------------------------------------------- */
 /*  SVG                                         */
 /* -------------------------------------------- */
 
@@ -216,10 +323,11 @@ export async function buildSVG(style, text) {
   const strokeWidth = style.iconType === "none" ? 0 : style.strokeWidth;
   const shape = SHAPES[style.iconType](style.backColor, style.foreColor, strokeWidth);
   const fontFamily = font.family ? `'${font.family.replace(/'/g, "")}', ${STOCK_FONT}` : STOCK_FONT;
+  const fontSize = await fittedFontSize(style, text, font);
   const defs = font.css ? `<defs><style>${escapeXML(font.css)}</style></defs>` : "";
   const label = text
     ? `<text x="50%" y="50%" dy=".3em" text-anchor="middle" fill="${style.foreColor}" `
-      + `font-family="${escapeXML(fontFamily)}" font-size="${style.iconFontSize}" `
+      + `font-family="${escapeXML(fontFamily)}" font-size="${fontSize}" `
       + `font-weight="${font.bold ? 700 : 400}" font-style="${font.italic ? "italic" : "normal"}">`
       + `${escapeXML(text)}</text>`
     : "";

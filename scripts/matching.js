@@ -5,13 +5,14 @@ import { MATCH_KEYS, debug, getSetting, warn } from "./constants.js";
  * group, or the whole match if there is none) becomes the icon text.
  */
 export const PATTERNS = {
-  // A number followed by a single letter: "23G", but not "1st Floor".
-  reg_num_alpha: /^\d{1,3}[a-zA-Z](?![a-zA-Z])/,
-  reg_alpha_num: /^[a-zA-Z]\d{1,3}/,
-  reg_num: /^\d{1,4}/,
-  reg_alpha_space: /^([a-zA-Z]) /,
-  reg_alpha_dot: /^([a-zA-Z])\./,
-  reg_num_dot: /^(\d{1,4})\./
+  // Letters of any alphabet. A number followed by a single letter: "23G", but not "1st Floor".
+  // Longer numbers don't match at all, rather than being cut off: "12345" isn't "1234".
+  reg_num_alpha: /^\d{1,3}\p{L}(?![\p{L}\d])/u,
+  reg_alpha_num: /^\p{L}\d{1,3}(?!\d)/u,
+  reg_num: /^\d{1,4}(?!\d)/u,
+  reg_alpha_space: /^(\p{L}) /u,
+  reg_alpha_dot: /^(\p{L})\./u,
+  reg_num_dot: /^(\d{1,4})\./u
 };
 
 /** Read the current matching settings. */
@@ -49,6 +50,7 @@ export function buildPatterns(settings) {
  */
 export function matchLabel(label, settings) {
   if ( typeof label !== "string" || !label ) return null;
+  label = label.normalize("NFC"); // "Ü" can also be stored as "U" plus a combining mark
   const {patterns, error} = buildPatterns(settings ?? getMatchSettings());
   if ( error ) warn("Invalid custom name matching pattern:", error);
   for ( const pattern of patterns ) {

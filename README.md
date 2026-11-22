@@ -27,7 +27,7 @@ Based on [Automatic Journal Icon Numbers](https://github.com/tcflanag/journal_ic
 ### Automatic icons
 
 When a map note is created for a journal entry or a journal page, the module looks at the start of the name and
-picks the icon text from it. These formats are recognized (upper and lower case):
+picks the icon text from it. These formats are recognized, with letters of any alphabet ("Ü3" works too):
 
 | Format | Example name | Icon text | On by default |
 |---|---|---|---|
@@ -40,7 +40,7 @@ picks the icon text from it. These formats are recognized (upper and lower case)
 | Your own pattern | | | no |
 
 The note's text label wins over the page name, which wins over the journal entry name. Names like "1st Floor" give
-"1", not "1s".
+"1", not "1s". Numbers that are too long for a format don't match, so "12345 Gate" gets no icon instead of "1234".
 
 ### Map note window
 
@@ -49,7 +49,10 @@ The **Map Note** window gets an **Automatic Icon** section below the icon settin
 - Turn the automatic icon on or off for this note. When it is off, the note uses the icon chosen above as usual.
 - Change the icon text, shape, font, text size, border width and colors for this note only.
 - A preview shows the icon as you change it.
-- For a new note, the icon text follows the journal entry, page and text label you pick, until you edit it yourself.
+- The icon text follows the journal entry, page and text label you pick, until you edit it yourself.
+- When a linked journal entry or page is renamed, the icon follows ("12 Tavern" to "14 Tavern"). Text you typed
+  yourself stays, and so does the icon if the new name has no number. A GM has to be connected. Turn it off with
+  **Follow Journal Renames**.
 
 The icon is saved as an SVG image in the upload folder when the note is saved.
 
@@ -64,6 +67,8 @@ The icon is saved as an SVG image in the upload folder when the note is saved.
   and the icon uses the default font. If Google Fonts is only temporarily unreachable, you get a warning, and
   **Rebuild Icons** adds the right font later.
 - **Text size** and **border width**.
+- **Fit Text to Shape**: long text like "A123" shrinks to fit inside the shape. On by default. Existing icons change
+  the next time they're saved or rebuilt.
 - **Text and border color** and **background color**, each with an opacity slider.
 - **Icon size** of new map notes in grid squares (at least 32 pixels, Foundry's minimum), and the **label font size** of new map notes.
 
@@ -86,6 +91,8 @@ The built-in patterns are tried first, in the order shown, then your own.
 
 - **Icons from Folders**: a new note whose journal entry is in a folder named like a stock icon ("Village", "Cave",
   "Book" …) gets that icon. Automatic icons from the name win. On by default.
+- **Folder Icons**: maps your own folder names to stock icons, for example "Dorf" to Village. These win over the
+  stock names.
 - **Icons from Image Pages**: a new note without an automatic icon uses the picture of its image page, or of the
   entry's first image page. Off by default.
 - **Quick Add Mode**: when a new note gets its icon from this module, it is created right away without showing the

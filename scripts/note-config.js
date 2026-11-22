@@ -1,4 +1,5 @@
 import { MODULE_ID, TEMPLATES, debug, getSetting, warn } from "./constants.js";
+import { getMappedFolderIcon } from "./apps/folder-icons-config.js";
 import { matchLabel } from "./matching.js";
 import { defaultIconSize, getNoteFlags, noteLabel } from "./notes.js";
 import { IconPreview, activateColorFields, readStyle, styleFieldsContext } from "./style-ui.js";
@@ -45,14 +46,15 @@ async function injectFields(app, options) {
   const preview = new IconPreview(fieldset);
   const refresh = () => refreshPreview(form, fieldset, preview);
 
-  // While the note has no stored icon settings, the icon text follows the note's label until the user edits it.
-  let followLabel = !note.flags?.[MODULE_ID];
+  // The icon text follows the note's label until the user edits it. A stored text follows only if it came from the label.
+  const stored = note.flags?.[MODULE_ID];
+  let followLabel = !stored || (stored.iconText === (matchLabel(noteLabel(note)) ?? ""));
   form.elements[`${PREFIX}iconText`].addEventListener("input", () => followLabel = false);
   form.elements[`${PREFIX}autoIcon`].addEventListener("change", () => followLabel = false);
 
   form.addEventListener("change", event => {
     const name = event.target.name;
-    if ( followLabel && ["text", "entryId", "pageId"].includes(name) ) updateFromLabel(form);
+    if ( followLabel && ["text", "entryId", "pageId"].includes(name) ) updateFromLabel(form, !!stored);
     if ( name === `${PREFIX}autoIcon` ) {
       fieldset.querySelector(".njin-auto-fields").hidden = !event.target.checked;
       app.setPosition({height: "auto"});
@@ -104,10 +106,11 @@ function setValue(form, name, value) {
 function applyFolderIcon(form, entry) {
   const folderName = entry?.folder?.name?.trim().toLowerCase();
   if ( !folderName ) return false;
-  // The keys of noteIcons are plain English names, the same in every language.
-  const match = Object.entries(CONFIG.JournalEntry.noteIcons).find(([name]) => name.toLowerCase() === folderName);
-  if ( !match ) return false;
-  setValue(form, "icon.selected", match[1]);
+  // The GM's own mapping first. The keys of noteIcons are plain English names, the same in every language.
+  const icon = getMappedFolderIcon(folderName)
+    ?? Object.entries(CONFIG.JournalEntry.noteIcons).find(([name]) => name.toLowerCase() === folderName)?.[1];
+  if ( !icon ) return false;
+  setValue(form, "icon.selected", icon);
   return true;
 }
 
@@ -123,14 +126,19 @@ function applyPageImage(form, entry, pageId) {
   return true;
 }
 
-/** Recompute the icon text from the label fields of the form. */
-function updateFromLabel(form) {
+/**
+ * Recompute the icon text from the label fields of the form.
+ * @param {HTMLFormElement} form
+ * @param {boolean} keepOnNoMatch  Keep the current icon if the new label doesn't match (for existing notes).
+ */
+function updateFromLabel(form, keepOnNoMatch) {
   const label = noteLabel({
     text: form.elements.text?.value,
     entryId: form.elements.entryId?.value,
     pageId: form.elements.pageId?.value
   });
   const iconText = matchLabel(label) ?? "";
+  if ( !iconText && keepOnNoMatch ) return;
   form.elements[`${PREFIX}iconText`].value = iconText;
   const auto = form.elements[`${PREFIX}autoIcon`];
   if ( auto.checked !== !!iconText ) {

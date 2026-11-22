@@ -93,3 +93,23 @@
   display: flex;
   flex-direction: column;
 }
+
+/* Folder icon mapping */
+.application .njin-folder-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.application .njin-folder-rows:empty {
+  display: none;
+}
+
+.application .njin-folder-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+}

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [14.2.0] - 2026-11-22
+
+### Added
+- **Fit Text to Shape:** long icon text now shrinks to fit inside circles, diamonds, hexagons and squares. It's on by default and can be turned off in the style settings or per note. Existing icons change the next time they're saved or rebuilt.
+- **Follow Journal Renames:** renaming "12 Tavern" to "14 Tavern" updates its map notes. Icon text you typed yourself stays. A GM has to be connected.
+- **Folder Icons:** choose a stock icon for any journal folder name, for example "Dorf" for the Village icon.
+
+### Changed
+- Name matching now works with letters of any alphabet, so "Ü3 Keller" gets an icon.
+- Numbers that are too long no longer get cut off: "12345 Gate" gets no automatic icon instead of "1234".
+
 ## [14.1.1] - 2026-11-22
 
 ### Fixed

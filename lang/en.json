@@ -18,7 +18,7 @@
       },
       "folderIcon": {
         "Name": "Icons from Folders",
-        "Hint": "A new map note whose journal entry is in a folder named like a stock icon (for example \"Village\" or \"Cave\") gets that icon. Automatic icons from the name win."
+        "Hint": "A new map note whose journal entry is in a folder named like a stock icon (for example \"Village\" or \"Cave\"), or listed under Folder Icons, gets that icon. Automatic icons from the name win."
       },
       "autoPageImage": {
         "Name": "Icons from Image Pages",
@@ -31,6 +31,15 @@
       "uploadPath": {
         "Name": "Upload Folder",
         "Hint": "Folder in your user data where the icon images are saved. Don't delete the images: map notes still use them."
+      },
+      "followRenames": {
+        "Name": "Follow Journal Renames",
+        "Hint": "When a journal entry or page is renamed, the automatic icons of its map notes update, for example from 12 to 14. Icon text you typed yourself stays."
+      },
+      "folderIconsMenu": {
+        "Name": "Folder Icons",
+        "Label": "Folder Icons",
+        "Hint": "Choose which stock icon a journal folder gets, so folders can have any name, for example \"Dorf\" for the Village icon."
       }
     },
     "Shapes": {
@@ -91,6 +100,10 @@
       "fontSize": {
         "Name": "Label Font Size",
         "Hint": "Font size of the label of new map notes."
+      },
+      "autoFit": {
+        "Name": "Fit Text to Shape",
+        "Hint": "Makes text smaller when it wouldn't fit inside the shape. It never gets larger than the text size above."
       }
     },
     "NoteConfig": {
@@ -149,6 +162,14 @@
       "FontUnavailable": "Nik's Journal Icon Numbers: Google Fonts can't be reached, so new icons use the default font for now. Rebuild Icons adds the right font once it's reachable again.",
       "WaitingForGM": "Nik's Journal Icon Numbers: this note's icon will be created when a GM connects.",
       "FilesLockedPacks": "Nik's Journal Icon Numbers: these locked compendiums still use icons from the old folder: {packs}. Keep the old folder, or unlock them and follow the steps in the README."
+    },
+    "FolderIcons": {
+      "Title": "Folder Icons",
+      "Intro": "New map notes whose journal entry is in one of these folders get the chosen stock icon. Upper and lower case don't matter. Needs \"Icons from Folders\" to be on.",
+      "Folder": "Folder name",
+      "Icon": "Stock icon",
+      "Add": "Add Folder",
+      "Remove": "Remove"
     }
   }
 }

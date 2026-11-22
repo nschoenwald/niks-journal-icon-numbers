@@ -1,0 +1,9 @@
+<div class="njin-folder-row">
+    <input type="text" class="njin-folder-name" value="{{row.folder}}" list="{{rootId}}-folders" spellcheck="false"
+           aria-label="{{localize "NJIN.FolderIcons.Folder"}}" placeholder="{{localize "NJIN.FolderIcons.Folder"}}">
+    <select class="njin-folder-icon" aria-label="{{localize "NJIN.FolderIcons.Icon"}}">
+        {{selectOptions icons selected=row.icon}}
+    </select>
+    <button type="button" class="icon fa-solid fa-trash" data-action="removeRow"
+            aria-label="{{localize "NJIN.FolderIcons.Remove"}}" data-tooltip="NJIN.FolderIcons.Remove"></button>
+</div>
