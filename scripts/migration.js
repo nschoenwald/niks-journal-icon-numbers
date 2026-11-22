@@ -1,5 +1,7 @@
 import { DEFAULT_UPLOAD_PATH, LEGACY_ID, MATCH_KEYS, MODULE_ID, SIZE_KEYS, STYLE_KEYS, debug, getSetting, loc, warn } from "./constants.js";
-import { copyIntoUploadFolder, ensureIcon, normalizeFolder, normalizePath, uploadFolder } from "./icon-files.js";
+import {
+  copyIntoUploadFolder, ensureIcon, folderExists, normalizeFolder, normalizePath, uploadFolder
+} from "./icon-files.js";
 import { styleOf } from "./notes.js";
 
 /** Default upload folder of the original module. */
@@ -52,15 +54,20 @@ async function migrateSettings() {
   return count;
 }
 
+/** The original module's settings of a note, as this module's flags. */
+function legacyFlags(note) {
+  // "autoIconFlags" is where versions before 1.0.4 stored the same data.
+  const legacy = {...note.flags.autoIconFlags, ...note.flags[LEGACY_ID]};
+  return Object.fromEntries(FLAG_KEYS.filter(k => k in legacy).map(k => [k, legacy[k]]));
+}
+
 async function migrateNotes() {
   let count = 0;
   for ( const scene of game.scenes ) {
     const updates = [];
     for ( const note of scene.notes ) {
       if ( note.flags[MODULE_ID] ) continue;
-      // "autoIconFlags" is where versions before 1.0.4 stored the same data.
-      const legacy = {...note.flags.autoIconFlags, ...note.flags[LEGACY_ID]};
-      const flags = Object.fromEntries(FLAG_KEYS.filter(k => k in legacy).map(k => [k, legacy[k]]));
+      const flags = legacyFlags(note);
       if ( !Object.keys(flags).length ) continue;
       updates.push({_id: note.id, [`flags.${MODULE_ID}`]: flags});
     }
@@ -103,14 +110,7 @@ export async function migrateIconFiles() {
   if ( !game.user.isActiveGM || getSetting("iconFilesMigrated") ) return;
   try {
     await resetCopiedUploadPath();
-    const target = uploadFolder();
-    const legacySetting = normalizeFolder(storedSetting(`${LEGACY_ID}.uploadPath`));
-    const folders = [LEGACY_FOLDER, OLD_FOLDER, legacySetting].filter(f => f && (f !== target));
-    const isOld = src => {
-      const path = normalizePath(src ?? "");
-      return folders.some(f => path.startsWith(`${f}/`));
-    };
-
+    const {target, isOld} = oldFolders();
     const scenes = game.scenes.map(scene => ({scene, notes: scene.notes.filter(n => isOld(n.texture.src))}))
       .filter(s => s.notes.length);
     const total = scenes.reduce((n, s) => n + s.notes.length, 0);
@@ -118,6 +118,55 @@ export async function migrateIconFiles() {
     await game.settings.set(MODULE_ID, "iconFilesMigrated", true);
   } catch(err) {
     warn("Moving the icon files failed.", err);
+  }
+}
+
+/** The folders icons may still be in, and a test for an image in one of them. */
+function oldFolders() {
+  const target = uploadFolder();
+  const legacySetting = normalizeFolder(storedSetting(`${LEGACY_ID}.uploadPath`));
+  const folders = [...new Set([LEGACY_FOLDER, OLD_FOLDER, legacySetting])].filter(f => f && (f !== target));
+  const isOld = src => {
+    const path = normalizePath(src ?? "");
+    return folders.some(f => path.startsWith(`${f}/`));
+  };
+  return {target, folders, isOld};
+}
+
+/**
+ * Move the icons of notes in compendium scenes, as migrateIconFiles does for world scenes. Locked compendiums can't be
+ * changed: the GM is told which ones still need the old folder. Adventure compendiums aren't covered.
+ * Runs once on the active GM, or again with `force` (for example after unlocking a compendium).
+ * @param {object} [options]
+ * @param {boolean} [options.force=false]
+ */
+export async function migrateCompendiumIcons({force=false}={}) {
+  if ( !game.user.isActiveGM || (!force && getSetting("compendiumFilesMigrated")) ) return;
+  try {
+    const {target, folders, isOld} = oldFolders();
+    const exists = await Promise.all(folders.map(folderExists));
+    const scenes = [];
+    const locked = new Set();
+    if ( exists.some(Boolean) ) {
+      for ( const pack of game.packs ) {
+        if ( pack.documentName !== "Scene" ) continue;
+        for ( const scene of await pack.getDocuments() ) {
+          const notes = scene.notes.filter(n => isOld(n.texture.src));
+          if ( !notes.length ) continue;
+          if ( pack.locked ) locked.add(pack.title);
+          else scenes.push({scene, notes});
+        }
+      }
+    }
+    const total = scenes.reduce((n, s) => n + s.notes.length, 0);
+    if ( total ) await moveFiles(scenes, total, target);
+    if ( locked.size ) {
+      const packs = [...locked].join(", ");
+      ui.notifications.warn(loc("Notifications.FilesLockedPacks", {packs}), {permanent: true});
+    }
+    await game.settings.set(MODULE_ID, "compendiumFilesMigrated", true);
+  } catch(err) {
+    warn("Moving the icon files of compendium scenes failed.", err);
   }
 }
 
@@ -129,8 +178,15 @@ async function moveFiles(scenes, total, target) {
     const updates = [];
     for ( const note of notes ) {
       const src = await copyOrRecreate(note);
-      if ( src ) updates.push({_id: note.id, "texture.src": src});
-      else failed++;
+      if ( src ) {
+        const update = {_id: note.id, "texture.src": src};
+        // Compendium notes never went through migrateNotes
+        if ( !note.flags[MODULE_ID] ) {
+          const flags = legacyFlags(note);
+          if ( Object.keys(flags).length ) update[`flags.${MODULE_ID}`] = flags;
+        }
+        updates.push(update);
+      } else failed++;
       progress.update({pct: ++done / total});
     }
     if ( updates.length ) await scene.updateEmbeddedDocuments("Note", updates, {[MODULE_ID]: {migration: true}});
@@ -150,8 +206,8 @@ async function copyOrRecreate(note) {
   } catch(err) {
     debug(`Could not copy ${note.texture.src}, recreating it`, err);
   }
-  const flags = note.flags[MODULE_ID];
-  if ( flags?.autoIcon && flags.iconText ) {
+  const flags = note.flags[MODULE_ID] ?? legacyFlags(note);
+  if ( flags.autoIcon && flags.iconText ) {
     try {
       return await ensureIcon(styleOf(flags), flags.iconText);
     } catch(err) {

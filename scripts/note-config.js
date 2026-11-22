@@ -1,6 +1,6 @@
 import { MODULE_ID, TEMPLATES, debug, getSetting, warn } from "./constants.js";
 import { matchLabel } from "./matching.js";
-import { getNoteFlags, noteLabel } from "./notes.js";
+import { defaultIconSize, getNoteFlags, noteLabel } from "./notes.js";
 import { IconPreview, activateColorFields, readStyle, styleFieldsContext } from "./style-ui.js";
 
 const PREFIX = `flags.${MODULE_ID}.`;
@@ -82,7 +82,7 @@ async function injectFields(app, options) {
 function applyNewNoteDefaults(form, note, flags) {
   const scene = note.parent ?? canvas.scene;
   const gridSize = scene?.grid.size ?? 100;
-  setValue(form, "iconSize", Math.max(Math.round(gridSize * getSetting("iconScale")), 1));
+  setValue(form, "iconSize", defaultIconSize(gridSize));
   setValue(form, "fontSize", getSetting("fontSize"));
   if ( flags.autoIcon ) return true;
 
@@ -102,11 +102,10 @@ function setValue(form, name, value) {
 
 /** Pick the stock icon named like the journal entry's folder ("Village", "Cave", ...). */
 function applyFolderIcon(form, entry) {
-  const folderName = entry?.folder?.name?.trim().toLocaleLowerCase(game.i18n.lang);
+  const folderName = entry?.folder?.name?.trim().toLowerCase();
   if ( !folderName ) return false;
-  const match = Object.entries(CONFIG.JournalEntry.noteIcons).find(([label]) => {
-    return [label, game.i18n.localize(label)].some(l => l.toLocaleLowerCase(game.i18n.lang) === folderName);
-  });
+  // The keys of noteIcons are plain English names, the same in every language.
+  const match = Object.entries(CONFIG.JournalEntry.noteIcons).find(([name]) => name.toLowerCase() === folderName);
   if ( !match ) return false;
   setValue(form, "icon.selected", match[1]);
   return true;

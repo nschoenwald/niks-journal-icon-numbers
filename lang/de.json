@@ -144,8 +144,11 @@
       "LegacyActive": "Nik's Journal Icon Numbers ist ausgeschaltet, solange \"Automatic Journal Icon Numbers\" aktiv ist. Deaktiviere eines der beiden Module.",
       "Migrated": "Nik's Journal Icon Numbers: Einstellungen und die Icons von {notes} Kartennotizen wurden aus Automatic Journal Icon Numbers übernommen.",
       "FilesMigrating": "Nik's Journal Icon Numbers: Icons der Kartennotizen werden nach {folder} verschoben…",
-      "FilesMigrated": "Nik's Journal Icon Numbers: Die Icons von {count} Kartennotizen wurden nach {folder} verschoben. Die alten Dateien liegen noch im alten Ordner und können gelöscht werden.",
-      "FilesMigratedFailed": "Nik's Journal Icon Numbers: {failed} von {total} Icons konnten nicht verschoben werden. Details in der Konsole (F12). Für Notizen mit automatischem Icon kann „Icons neu erstellen“ sie wieder erzeugen."
+      "FilesMigrated": "Nik's Journal Icon Numbers: Die Icons von {count} Kartennotizen wurden nach {folder} verschoben. Die alten Dateien liegen noch im alten Ordner.",
+      "FilesMigratedFailed": "Nik's Journal Icon Numbers: {failed} von {total} Icons konnten nicht verschoben werden. Details in der Konsole (F12). Für Notizen mit automatischem Icon kann „Icons neu erstellen“ sie wieder erzeugen.",
+      "FontUnavailable": "Nik's Journal Icon Numbers: Google Fonts ist nicht erreichbar, neue Icons nutzen vorerst die Standardschrift. „Icons neu erstellen“ ergänzt die richtige Schrift, sobald sie wieder erreichbar ist.",
+      "WaitingForGM": "Nik's Journal Icon Numbers: Das Icon dieser Notiz wird erstellt, sobald ein GM verbunden ist.",
+      "FilesLockedPacks": "Nik's Journal Icon Numbers: Diese gesperrten Kompendien nutzen noch Icons aus dem alten Ordner: {packs}. Behalte den alten Ordner oder entsperre sie und folge den Schritten in der README."
     }
   }
 }

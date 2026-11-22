@@ -1,4 +1,4 @@
-import { DEFAULT_UPLOAD_PATH, STYLE_KEYS, debug, getSetting } from "./constants.js";
+import { DEFAULT_UPLOAD_PATH, STYLE_KEYS, debug, getSetting, loc } from "./constants.js";
 import { buildSVG, normalizeStyle } from "./icon-svg.js";
 
 const FilePicker = () => foundry.applications.apps.FilePicker.implementation;
@@ -11,6 +11,9 @@ const knownFiles = new Map();
 
 /** Icons being generated right now, by file path, so parallel requests for the same icon upload it once. */
 const pending = new Map();
+
+/** Whether this session already warned that Google Fonts can't be reached. */
+let fontWarningShown = false;
 
 /** Can the current user create icon files? */
 export function canUpload(user=game.user) {
@@ -56,7 +59,9 @@ function hash(str) {
  * @param {string} text
  */
 function iconFilename(style, text) {
-  const key = JSON.stringify([text, ...STYLE_KEYS.map(k => style[k])]);
+  // "font-2": before 14.1.1, a font that failed to load was saved under the same name as the real icon. The new name
+  // lets Rebuild Icons replace those images.
+  const key = JSON.stringify([text, ...STYLE_KEYS.map(k => style[k]), ...(style.fontFamily ? ["font-2"] : [])]);
   const readable = text.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 16);
   return `${hash(key)}_${readable}.svg`;
 }
@@ -125,11 +130,21 @@ export async function ensureIcon(style, text) {
   const promise = (async () => {
     const files = await listFolder(source, folder);
     if ( files.has(path) ) return files.get(path);
-    const {svg} = await buildSVG(style, text);
-    const file = new File([svg], filename, {type: "image/svg+xml"});
+    const {svg, fontUnavailable} = await buildSVG(style, text);
+
+    // Without its font this isn't the real icon: keep the real file name free, so a later save or rebuild creates it.
+    const savedName = fontUnavailable ? filename.replace(/\.svg$/, ".no-font.svg") : filename;
+    const savedPath = `${folder}/${savedName}`;
+    if ( fontUnavailable && !fontWarningShown ) {
+      fontWarningShown = true;
+      ui.notifications.warn(loc("Notifications.FontUnavailable"));
+    }
+    if ( files.has(savedPath) ) return files.get(savedPath);
+
+    const file = new File([svg], savedName, {type: "image/svg+xml"});
     const result = await FilePicker().upload(source, folder, file, {}, {notify: false});
-    if ( !result?.path ) throw new Error(`Upload of ${path} failed`);
-    files.set(path, result.path);
+    if ( !result?.path ) throw new Error(`Upload of ${savedPath} failed`);
+    files.set(savedPath, result.path);
     debug("Uploaded icon", result.path);
     return result.path;
   })();
@@ -138,6 +153,20 @@ export async function ensureIcon(style, text) {
     return await promise;
   } finally {
     pending.delete(path);
+  }
+}
+
+/**
+ * Does a folder exist in the user data?
+ * @param {string} folder
+ * @returns {Promise<boolean>}
+ */
+export async function folderExists(folder) {
+  try {
+    await FilePicker().browse(fileSource(), folder);
+    return true;
+  } catch(err) {
+    return false;
   }
 }
 

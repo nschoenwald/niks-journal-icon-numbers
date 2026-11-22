@@ -61,10 +61,11 @@ The icon is saved as an SVG image in the upload folder when the note is saved.
 - **Font**: the name of any font from [Google Fonts](https://fonts.google.com), for example "Roboto Slab", with bold
   and italics. Leave it empty for the default font. Only the characters of the icon are downloaded and stored inside
   the image, so the icon looks the same for everyone, even offline. If a font can't be found, the preview says so
-  and the icon uses the default font.
+  and the icon uses the default font. If Google Fonts is only temporarily unreachable, you get a warning, and
+  **Rebuild Icons** adds the right font later.
 - **Text size** and **border width**.
 - **Text and border color** and **background color**, each with an opacity slider.
-- **Icon size** of new map notes in grid squares, and the **label font size** of new map notes.
+- **Icon size** of new map notes in grid squares (at least 32 pixels, Foundry's minimum), and the **label font size** of new map notes.
 
 ### Name matching
 
@@ -102,7 +103,7 @@ to give every note the current default style and size.
 
 Players who may create map notes can use the automatic icons too. Saving the image needs the **Upload Files** and
 **Browse File Explorer** permissions; for players without them, the GM's client creates the image, so a GM has to be
-connected.
+connected. If none is, the player is told, and the icon is created the next time a GM joins.
 
 ---
 
@@ -113,9 +114,17 @@ connected.
 2. The first time a GM loads the world, the module copies the old module's settings and the automatic icon settings of
    every map note.
 3. It also copies the icon images of all map notes from the old module's upload folder into this module's upload
-   folder and points the notes at the copies. Missing images are created again from the note's settings. The old
-   module's settings and files stay untouched; once everything looks right you can delete the old folder
-   (`upload/journal-icon-numbers` by default).
+   folder and points the notes at the copies. This covers world scenes and unlocked Scene compendiums. Missing images
+   are created again from the note's settings. The old module's settings and files stay untouched.
+4. If a locked compendium still uses the old images, a warning names it. Unlock it, then run this in the console as
+   GM:
+
+   ```js
+   await game.modules.get("niks-journal-icon-numbers").api.migrateCompendiumIcons({force: true})
+   ```
+
+You can delete the old folder (`upload/journal-icon-numbers` by default) once no warning names a compendium. Scenes
+inside **Adventure** compendiums aren't checked, so keep the folder if one of your Adventures uses these icons.
 
 The upload folder setting of the old module isn't taken over: icons always move to this module's folder.
 
@@ -129,6 +138,7 @@ The upload folder setting of the old module isn't taken over: icons always move 
 - `getNoteFlags(note)`: the automatic icon settings of a note, filled up with the defaults.
 - `applyIcon(note)`: create the icon of a note with an automatic icon and set it as the note's texture.
 - `rebuildIcons({useDefaults})`: rebuild all icons, see above.
+- `migrateCompendiumIcons({force})`: move old icon images used by unlocked Scene compendiums.
 
 The settings of a note live in `flags["niks-journal-icon-numbers"]`: `autoIcon`, `iconText`, `iconType`, `foreColor`,
 `backColor` (`#rrggbbaa`), `fontFamily`, `fontBold`, `fontItalics`, `strokeWidth`, `iconFontSize`. Changing them

@@ -2,9 +2,9 @@ import { DEFAULT_UPLOAD_PATH, LEGACY_ID, MODULE_ID, TEMPLATES, loc } from "./con
 import MatchingConfig from "./apps/matching-config.js";
 import RebuildIcons, { rebuildIcons } from "./apps/rebuild-icons.js";
 import StyleConfig from "./apps/style-config.js";
-import { migrateFromLegacy, migrateIconFiles } from "./migration.js";
+import { migrateCompendiumIcons, migrateFromLegacy, migrateIconFiles } from "./migration.js";
 import { onRenderNoteConfig } from "./note-config.js";
-import { applyIcon, getNoteFlags, registerNoteHooks } from "./notes.js";
+import { applyIcon, applyPendingIcons, getNoteFlags, registerNoteHooks } from "./notes.js";
 import { matchLabel } from "./matching.js";
 
 CONFIG.debug.niksJournalIconNumbers ??= false;
@@ -65,12 +65,13 @@ function registerSettings() {
 
   register("legacyMigrated", {type: Boolean, default: false});
   register("iconFilesMigrated", {type: Boolean, default: false});
+  register("compendiumFilesMigrated", {type: Boolean, default: false});
 }
 
 Hooks.once("init", () => {
   registerSettings();
   foundry.applications.handlebars.loadTemplates(Object.values(TEMPLATES));
-  game.modules.get(MODULE_ID).api = {applyIcon, getNoteFlags, matchLabel, rebuildIcons};
+  game.modules.get(MODULE_ID).api = {applyIcon, getNoteFlags, matchLabel, migrateCompendiumIcons, rebuildIcons};
 });
 
 Hooks.once("ready", async () => {
@@ -83,4 +84,6 @@ Hooks.once("ready", async () => {
   registerNoteHooks();
   await migrateFromLegacy();
   await migrateIconFiles();
+  await migrateCompendiumIcons();
+  await applyPendingIcons();
 });

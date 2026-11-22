@@ -144,8 +144,11 @@
       "LegacyActive": "Nik's Journal Icon Numbers is turned off while \"Automatic Journal Icon Numbers\" is active. Deactivate one of the two modules.",
       "Migrated": "Nik's Journal Icon Numbers: copied the settings and the icons of {notes} map notes from Automatic Journal Icon Numbers.",
       "FilesMigrating": "Nik's Journal Icon Numbers: moving map note icons to {folder}…",
-      "FilesMigrated": "Nik's Journal Icon Numbers: moved the icons of {count} map notes to {folder}. The old files are still in their old folder; you can delete them.",
-      "FilesMigratedFailed": "Nik's Journal Icon Numbers: {failed} of {total} map note icons couldn't be moved. Details in the console (F12). Rebuild Icons can create them again for notes with an automatic icon."
+      "FilesMigrated": "Nik's Journal Icon Numbers: moved the icons of {count} map notes to {folder}. The old files are still in their old folder.",
+      "FilesMigratedFailed": "Nik's Journal Icon Numbers: {failed} of {total} map note icons couldn't be moved. Details in the console (F12). Rebuild Icons can create them again for notes with an automatic icon.",
+      "FontUnavailable": "Nik's Journal Icon Numbers: Google Fonts can't be reached, so new icons use the default font for now. Rebuild Icons adds the right font once it's reachable again.",
+      "WaitingForGM": "Nik's Journal Icon Numbers: this note's icon will be created when a GM connects.",
+      "FilesLockedPacks": "Nik's Journal Icon Numbers: these locked compendiums still use icons from the old folder: {packs}. Keep the old folder, or unlock them and follow the steps in the README."
     }
   }
 }

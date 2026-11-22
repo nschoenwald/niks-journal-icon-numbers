@@ -1,7 +1,7 @@
-import { MODULE_ID, STYLE_KEYS, TEMPLATES, getSetting, loc, warn } from "../constants.js";
+import { MODULE_ID, STYLE_KEYS, TEMPLATES, loc, warn } from "../constants.js";
 import { clearFileCache, ensureIcon } from "../icon-files.js";
 import { getDefaultStyle } from "../icon-svg.js";
-import { styleOf } from "../notes.js";
+import { defaultIconSize, styleOf } from "../notes.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -33,10 +33,11 @@ export async function rebuildIcons({useDefaults=false}={}) {
       const flags = useDefaults ? {...note.flags[MODULE_ID], ...defaults} : note.flags[MODULE_ID];
       try {
         const src = await ensureIcon(styleOf(flags), flags.iconText);
+        if ( !src ) throw new Error("The note has no icon text");
         const update = {_id: note.id, "texture.src": src};
         if ( useDefaults ) {
           for ( const key of STYLE_KEYS ) update[`flags.${MODULE_ID}.${key}`] = defaults[key];
-          update.iconSize = Math.max(Math.round(scene.grid.size * getSetting("iconScale")), 1);
+          update.iconSize = defaultIconSize(scene.grid.size);
         }
         updates.push(update);
       } catch(err) {
@@ -45,7 +46,13 @@ export async function rebuildIcons({useDefaults=false}={}) {
       }
       progress.update({pct: ++done / total});
     }
-    if ( updates.length ) await scene.updateEmbeddedDocuments("Note", updates, {[MODULE_ID]: {rebuild: true}});
+    if ( !updates.length ) continue;
+    try {
+      await scene.updateEmbeddedDocuments("Note", updates, {[MODULE_ID]: {rebuild: true}});
+    } catch(err) {
+      failed += updates.length;
+      warn(`Could not update the notes of scene ${scene.uuid}.`, err);
+    }
   }
   progress.update({pct: 1});
   if ( failed ) ui.notifications.warn(loc("Rebuild.Failed", {failed, total}));

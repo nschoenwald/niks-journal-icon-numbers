@@ -142,7 +142,8 @@ async function blobToDataURL(blob) {
  * @param {boolean} bold
  * @param {boolean} italic
  * @param {string} text
- * @returns {Promise<string|null>}  The CSS, or null if the font or variant doesn't exist or can't be reached.
+ * @returns {Promise<{css: string|null, status: "ok"|"missing"|"unavailable"}>}  "missing": Google doesn't have this
+ *   font or variant. "unavailable": Google or the network failed, so the font may well exist.
  */
 async function fetchFontCSS(family, bold, italic, text) {
   const key = JSON.stringify([family, bold, italic, text]);
@@ -153,24 +154,26 @@ async function fetchFontCSS(family, bold, italic, text) {
       + `&text=${encodeURIComponent(text)}`;
     try {
       const response = await fetch(url);
-      if ( !response.ok ) return null;
+      if ( !response.ok ) {
+        return {css: null, status: [400, 404].includes(response.status) ? "missing" : "unavailable"};
+      }
       let css = await response.text();
       const urls = [...new Set(css.match(/https:\/\/[^)'"\s]+/g) ?? [])];
       for ( const fontURL of urls ) {
         const fontResponse = await fetch(fontURL);
-        if ( !fontResponse.ok ) return null;
+        if ( !fontResponse.ok ) return {css: null, status: "unavailable"};
         css = css.replaceAll(fontURL, await blobToDataURL(await fontResponse.blob()));
       }
-      return css;
+      return {css, status: "ok"};
     } catch(err) {
       warn(`Could not load the font "${family}" from Google Fonts.`, err);
-      return null;
+      return {css: null, status: "unavailable"};
     }
   })();
   fontCache.set(key, promise);
-  const css = await promise;
-  if ( css === null ) fontCache.delete(key); // Retry later, the failure may have been a network problem.
-  return css;
+  const result = await promise;
+  if ( result.status === "unavailable" ) fontCache.delete(key); // Try again next time
+  return result;
 }
 
 /**
@@ -178,19 +181,22 @@ async function fetchFontCSS(family, bold, italic, text) {
  * the stock font if the family can't be loaded at all.
  * @param {object} style
  * @param {string} text
- * @returns {Promise<{css: string, family: string, bold: boolean, italic: boolean, found: boolean}>}
+ * @returns {Promise<{css: string, family: string, bold: boolean, italic: boolean, found: boolean,
+ *   unavailable: boolean}>}  `unavailable`: the font couldn't be checked because Google or the network failed.
  */
 async function resolveFont(style, text) {
   const family = style.fontFamily;
-  if ( !family ) return {css: "", family: "", bold: style.fontBold, italic: style.fontItalics, found: true};
+  const stock = {css: "", family: "", bold: style.fontBold, italic: style.fontItalics};
+  if ( !family ) return {...stock, found: true, unavailable: false};
   const variants = [[style.fontBold, style.fontItalics]];
   if ( style.fontBold && style.fontItalics ) variants.push([true, false], [false, true]);
   if ( style.fontBold || style.fontItalics ) variants.push([false, false]);
   for ( const [bold, italic] of variants ) {
-    const css = await fetchFontCSS(family, bold, italic, text);
-    if ( css ) return {css, family, bold, italic, found: true};
+    const {css, status} = await fetchFontCSS(family, bold, italic, text);
+    if ( status === "ok" ) return {css, family, bold, italic, found: true, unavailable: false};
+    if ( status === "unavailable" ) return {...stock, found: false, unavailable: true};
   }
-  return {css: "", family: "", bold: style.fontBold, italic: style.fontItalics, found: false};
+  return {...stock, found: false, unavailable: false};
 }
 
 /* -------------------------------------------- */
@@ -201,12 +207,12 @@ async function resolveFont(style, text) {
  * Build the SVG markup of an icon.
  * @param {object} style  A style object, see STYLE_KEYS.
  * @param {string} text   The icon text.
- * @returns {Promise<{svg: string, fontFound: boolean}>}
+ * @returns {Promise<{svg: string, fontFound: boolean, fontUnavailable: boolean}>}
  */
 export async function buildSVG(style, text) {
   style = normalizeStyle(style);
   text = String(text ?? "");
-  const font = text ? await resolveFont(style, text) : {css: "", family: "", found: true};
+  const font = text ? await resolveFont(style, text) : {css: "", family: "", found: true, unavailable: false};
   const strokeWidth = style.iconType === "none" ? 0 : style.strokeWidth;
   const shape = SHAPES[style.iconType](style.backColor, style.foreColor, strokeWidth);
   const fontFamily = font.family ? `'${font.family.replace(/'/g, "")}', ${STOCK_FONT}` : STOCK_FONT;
@@ -220,7 +226,7 @@ export async function buildSVG(style, text) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="128" height="128" `
     + `style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision">${defs}<g>${shape}${label}</g></svg>`;
   debug("Built SVG", text, style);
-  return {svg, fontFound: font.found};
+  return {svg, fontFound: font.found, fontUnavailable: font.unavailable};
 }
 
 /**

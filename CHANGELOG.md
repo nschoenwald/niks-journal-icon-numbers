@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [14.1.1] - 2026-11-22
+
+### Fixed
+- **Small grids:** new notes and **Rebuild Icons** no longer fail on scenes with a grid under 43 pixels. Icons now stay at Foundry's minimum of 32 pixels.
+- **Google Fonts outages:** an icon made while Google Fonts is unreachable no longer stays on the default font for good. You get a warning, and **Rebuild Icons** adds the right font later. This also repairs icons affected in earlier versions.
+- **Compendium scenes:** the move to the new icon folder now includes unlocked Scene compendiums. A warning names any locked compendium that still needs the old folder.
+- **Players without a GM online:** players without upload rights are told when an icon has to wait, and it's created when a GM joins.
+- **Quick changes:** changing a note twice in a row can no longer leave the older icon on it, and deleting a note while its icon is saving no longer shows an error.
+- **Icons from Folders** now always matches Foundry's English stock icon names, in every language.
+
 ## [14.1.0] - 2026-11-19
 
 ### Changed
